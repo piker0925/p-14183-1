@@ -2,6 +2,7 @@ package com.back.domain.post.post.controller;
 
 import com.back.domain.member.member.entity.Member;
 import com.back.domain.post.post.dto.PostDto;
+import com.back.domain.post.post.dto.PostWithContentDto;
 import com.back.domain.post.post.entity.Post;
 import com.back.domain.post.post.service.PostService;
 import com.back.global.rq.Rq;
@@ -14,13 +15,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@Validated
 @RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
 @Tag(name = "ApiV1PostController", description = "API 글 컨트롤러")
@@ -37,25 +36,25 @@ public class ApiV1PostController {
 
         return items
                 .stream()
-                .map(PostDto::new)
+                .map(PostDto::new) // PostDto로 변환
                 .toList();
     }
 
     @GetMapping("/{id}")
     @Transactional(readOnly = true)
     @Operation(summary = "단건 조회")
-    public PostDto getItem(
-            @PathVariable int id
-    ) {
+    public PostWithContentDto getItem(@PathVariable int id) {
         Post post = postService.findById(id).get();
 
-        return new PostDto(post);
+        return new PostWithContentDto(post);
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     @Operation(summary = "삭제")
-    public RsData<Void> delete(@PathVariable int id) {
+    public RsData<Void> delete(
+            @PathVariable int id
+    ) {
         Member actor = rq.getActor();
 
         Post post = postService.findById(id).get();
@@ -71,7 +70,7 @@ public class ApiV1PostController {
     }
 
 
-    public record PostWriteReqBody(
+    record PostWriteReqBody(
             @NotBlank
             @Size(min = 2, max = 100)
             String title,
@@ -85,7 +84,7 @@ public class ApiV1PostController {
     @Transactional
     @Operation(summary = "작성")
     public RsData<PostDto> write(
-            @RequestBody @Valid PostWriteReqBody reqBody
+            @Valid @RequestBody PostWriteReqBody reqBody
     ) {
         Member actor = rq.getActor();
 
@@ -98,8 +97,7 @@ public class ApiV1PostController {
         );
     }
 
-
-    public record PostModifyReqBody(
+    record PostModifyReqBody(
             @NotBlank
             @Size(min = 2, max = 100)
             String title,
@@ -114,7 +112,7 @@ public class ApiV1PostController {
     @Operation(summary = "수정")
     public RsData<Void> modify(
             @PathVariable int id,
-            @RequestBody @Valid PostModifyReqBody reqBody
+            @Valid @RequestBody PostModifyReqBody reqBody
     ) {
         Member actor = rq.getActor();
 
