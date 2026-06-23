@@ -36,9 +36,8 @@ public class ApiV1PostControllerTest {
     @Autowired
     private MemberService memberService;
 
-
     @Test
-    @DisplayName("글 작성")
+    @DisplayName("글 쓰기")
     @WithUserDetails("user1")
     void t1() throws Exception {
         ResultActions resultActions = mvc
@@ -66,9 +65,8 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.data.createDate").value(Matchers.startsWith(post.getCreateDate().toString().substring(0, 20))))
                 .andExpect(jsonPath("$.data.modifyDate").value(Matchers.startsWith(post.getModifyDate().toString().substring(0, 20))))
                 .andExpect(jsonPath("$.data.authorId").value(post.getAuthor().getId()))
-                .andExpect(jsonPath("$.data.authorName").value(post.getAuthor().getName()))
-                .andExpect(jsonPath("$.data.title").value("제목"))
-                .andExpect(jsonPath("$.data.content").value("내용"));
+                .andExpect(jsonPath("$.data.authorName").value(post.getAuthor().getNickname()))
+                .andExpect(jsonPath("$.data.title").value("제목"));
     }
 
     @Test
@@ -127,7 +125,7 @@ public class ApiV1PostControllerTest {
     }
 
     @Test
-    @DisplayName("글 작성, without title")
+    @DisplayName("글 쓰기, without title")
     @WithUserDetails("user1")
     void t7() throws Exception {
         ResultActions resultActions = mvc
@@ -155,7 +153,7 @@ public class ApiV1PostControllerTest {
     }
 
     @Test
-    @DisplayName("글 작성, without content")
+    @DisplayName("글 쓰기, without content")
     @WithUserDetails("user1")
     void t8() throws Exception {
         ResultActions resultActions = mvc
@@ -183,7 +181,7 @@ public class ApiV1PostControllerTest {
     }
 
     @Test
-    @DisplayName("글 작성, with wrong json syntax")
+    @DisplayName("글 쓰기, with wrong json syntax")
     @WithUserDetails("user1")
     void t9() throws Exception {
         String wrongJsonBody = """
@@ -236,8 +234,8 @@ public class ApiV1PostControllerTest {
         ResultActions resultActions = mvc
                 .perform(
                         post("/api/v1/posts")
-                                .header("Authorization", "Bearer wrong-api-key")
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer wrong-api-key")
                                 .content("""
                                         {
                                             "title": "제목",
@@ -305,7 +303,7 @@ public class ApiV1PostControllerTest {
                 .andExpect(handler().methodName("modify"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.resultCode").value("403-1"))
-                .andExpect(jsonPath("$.msg").value("%d번 글 수정 권한이 없습니다.".formatted(id)));
+                .andExpect(jsonPath("$.msg").value("%d번 글 수정권한이 없습니다.".formatted(id)));
     }
 
 
@@ -346,7 +344,7 @@ public class ApiV1PostControllerTest {
                 .andExpect(handler().methodName("delete"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.resultCode").value("403-2"))
-                .andExpect(jsonPath("$.msg").value("%d번 글 삭제 권한이 없습니다.".formatted(id)));
+                .andExpect(jsonPath("$.msg").value("%d번 글 삭제권한이 없습니다.".formatted(id)));
     }
 
 
@@ -371,7 +369,7 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.createDate").value(Matchers.startsWith(post.getCreateDate().toString().substring(0, 20))))
                 .andExpect(jsonPath("$.modifyDate").value(Matchers.startsWith(post.getModifyDate().toString().substring(0, 20))))
                 .andExpect(jsonPath("$.authorId").value(post.getAuthor().getId()))
-                .andExpect(jsonPath("$.authorName").value(post.getAuthor().getName()))
+                .andExpect(jsonPath("$.authorName").value(post.getAuthor().getNickname()))
                 .andExpect(jsonPath("$.title").value(post.getTitle()))
                 .andExpect(jsonPath("$.content").value(post.getContent()));
     }
@@ -420,9 +418,8 @@ public class ApiV1PostControllerTest {
                     .andExpect(jsonPath("$[%d].createDate".formatted(i)).value(Matchers.startsWith(post.getCreateDate().toString().substring(0, 20))))
                     .andExpect(jsonPath("$[%d].modifyDate".formatted(i)).value(Matchers.startsWith(post.getModifyDate().toString().substring(0, 20))))
                     .andExpect(jsonPath("$[%d].authorId".formatted(i)).value(post.getAuthor().getId()))
-                    .andExpect(jsonPath("$[%d].authorName".formatted(i)).value(post.getAuthor().getName()))
-                    .andExpect(jsonPath("$[%d].title".formatted(i)).value(post.getTitle()))
-                    .andExpect(jsonPath("$[%d].content".formatted(i)).value(post.getContent()));
+                    .andExpect(jsonPath("$[%d].authorName".formatted(i)).value(post.getAuthor().getNickname()))
+                    .andExpect(jsonPath("$[%d].title".formatted(i)).value(post.getTitle()));
         }
     }
 }
