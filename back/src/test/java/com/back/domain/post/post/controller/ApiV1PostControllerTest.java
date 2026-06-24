@@ -303,7 +303,7 @@ public class ApiV1PostControllerTest {
                 .andExpect(handler().methodName("modify"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.resultCode").value("403-1"))
-                .andExpect(jsonPath("$.msg").value("%d번 글 수정권한이 없습니다.".formatted(id)));
+                .andExpect(jsonPath("$.msg").value("%d번 글 수정 권한이 없습니다.".formatted(id)));
     }
 
 
@@ -344,7 +344,7 @@ public class ApiV1PostControllerTest {
                 .andExpect(handler().methodName("delete"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.resultCode").value("403-2"))
-                .andExpect(jsonPath("$.msg").value("%d번 글 삭제권한이 없습니다.".formatted(id)));
+                .andExpect(jsonPath("$.msg").value("%d번 글 삭제 권한이 없습니다.".formatted(id)));
     }
 
 
