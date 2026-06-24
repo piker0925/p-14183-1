@@ -4,12 +4,14 @@ import com.back.domain.member.member.entity.Member;
 
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotNull;
+
 public record MemberWithUsernameDto(
-        int id,
-        LocalDateTime createDate,
-        LocalDateTime modifyDate,
-        String username,
-        String name
+        @NotNull int id,
+        @NotNull LocalDateTime createDate,
+        @NotNull LocalDateTime modifyDate,
+        @NotNull String username,
+        @NotNull String name
 ) {
     public MemberWithUsernameDto(Member member) {
         this(
