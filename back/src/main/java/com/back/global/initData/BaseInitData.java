@@ -27,7 +27,6 @@ public class BaseInitData {
         return args -> {
             self.work1();
             self.work2();
-            self.work3();
         };
     }
 
@@ -75,7 +74,10 @@ public class BaseInitData {
         post2.addComment(memberUser3, "댓글 2-2");
     }
 
-    @Transactional
-    public void work3() {
+    @Bean
+    ApplicationRunner devInitDataApplicationRunner() {
+        return args -> {
+            System.out.println("개발 환경에서 초기 데이터가 설정되었습니다!");
+        };
     }
 }
